@@ -1,1 +1,1 @@
-# CoreML-PX2 - yolov7 object detection as prototype
+# PX2 - CoreML of Yolov7 for iOS (as Prototype)
