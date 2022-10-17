@@ -6,8 +6,6 @@ class CALayerController: UIViewController, AVCaptureVideoDataOutputSampleBufferD
     
     var bufferSize: CGSize = .zero
     var rootLayer: CALayer! = nil
-    public var text1:UILabel = UILabel()
-    let fontsize:CGFloat = 20
     
     @IBOutlet weak private var previewView: UIView!
     private let session = AVCaptureSession()
@@ -19,16 +17,7 @@ class CALayerController: UIViewController, AVCaptureVideoDataOutputSampleBufferD
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         // to be implemented in the subclass
     }
-    /*
-    func SetPXTestingText(rootLayer:CALayer){
-        // Text PX
-        text1.frame = CGRect.init(x:0.0, y:0.0, width: bufferSize.width, height: bufferSize.height)
-        text1.textColor = UIColor.red
-        text1.font = UIFont.systemFont(ofSize:fontsize)
-        text1.text = "PX2 Testing"
-        rootLayer.addSublayer(text1)
-    }
-    */
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupAVCapture()
@@ -43,7 +32,7 @@ class CALayerController: UIViewController, AVCaptureVideoDataOutputSampleBufferD
         var deviceInput: AVCaptureDeviceInput!
         
         // Select a video device, make an input
-        let videoDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: AVMediaType.video, position: .back)
+        let videoDevice = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera], mediaType: .video, position: .back).devices.first
         do {
             deviceInput = try AVCaptureDeviceInput(device: videoDevice!)
         } catch {
