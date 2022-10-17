@@ -3,17 +3,13 @@ import SwiftUI
 struct ContentView: View {
     @State var isStart = false
     var body: some View {
-        VStack {
-            Image("waiting")
-            Button(action:{
-                isStart = true
-            }, label:{
-                Text("PX2 Start")
-                    .padding()
-            })
-            .sheet(isPresented: $isStart) {
-                ViewController()
-            }
+        Button("PX2 Start"){
+            isStart.toggle()
+        }
+        .fullScreenCover(isPresented: $isStart) {
+            ViewController()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .edgesIgnoringSafeArea(.all)
         }
     }
 }
