@@ -66,7 +66,7 @@ class CALayerController: UIViewController, AVCaptureVideoDataOutputSampleBufferD
         previewLayer = AVCaptureVideoPreviewLayer(session: session)
         previewLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
         rootLayer = view.layer
-        previewLayer.frame = rootLayer.bounds
+        previewLayer.frame = rootLayer.frame
         rootLayer.addSublayer(previewLayer)
     }
     

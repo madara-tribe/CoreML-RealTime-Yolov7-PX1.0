@@ -7,7 +7,7 @@ struct ContentView: View {
             isStart.toggle()
         }
         .fullScreenCover(isPresented: $isStart) {
-            ViewController()
+            ObjectDetectionController()
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .edgesIgnoringSafeArea(.all)
         }
