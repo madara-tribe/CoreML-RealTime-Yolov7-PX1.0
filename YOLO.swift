@@ -2,20 +2,20 @@ import SwiftUI
 import CoreML
 import Vision
 
-protocol Resnet50ModelManagerDelegate: AnyObject {
-    func didRecieve(_ observation: VNClassificationObservation)
+protocol YOLOModelManagerDelegate: AnyObject {
+    func didRecieve(_ results: [VNRecognizedObjectObservation])
 }
 
-class Resnet50ModelManager: NSObject {
+class YOLOModelManager: NSObject {
 
-    weak var delegate: Resnet50ModelManagerDelegate?
+    weak var delegate: YOLOModelManagerDelegate?
 
     // Request
     func CreateRequest()->VNCoreMLRequest{
         do {
             // Model instance
             let configuration = MLModelConfiguration()
-            let model = try VNCoreMLModel(for: Resnet50(configuration:configuration).model)
+            let model = try VNCoreMLModel(for: YOLOv3(configuration:configuration).model)
             // create Request
             let request = VNCoreMLRequest(model:model, completionHandler:{request, error in
                 // post proccesing
@@ -33,9 +33,9 @@ class Resnet50ModelManager: NSObject {
         guard let results = request.results else{
             return
         }
-        let classification = results as! [VNClassificationObservation]
+        let detections = results as! [VNRecognizedObjectObservation]
         // get results label
-        self.delegate?.didRecieve(classification[0])
+        self.delegate?.didRecieve(detections)
     }
     func performRequet(image:UIImage){
         guard let ciImage = CIImage(image : image) else {

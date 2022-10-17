@@ -9,11 +9,11 @@ final class ViewController: CALayerController {
     var detecting:Bool = false
     var stime:Date!
     
-    private let resnet50ModelManager = Resnet50ModelManager()
+    private let YOLOModel = YOLOModelManager()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        resnet50ModelManager.delegate = self
+        YOLOModel.delegate = self
         // setup Vision parts
         setupLayers()
         updateLayerGeometry()
@@ -56,16 +56,15 @@ final class ViewController: CALayerController {
         CATransaction.commit()
         
     }
-    //confidence: VNConfidence
-    func createTextSubLayerInBounds(identifier: String) -> CATextLayer {
+    func createTextSubLayerInBounds(_ bounds: CGRect, identifier: String, confidence: VNConfidence) -> CATextLayer {
         let textLayer = CATextLayer()
         textLayer.name = "Object Label"
-        let formattedString = NSMutableAttributedString(string: String(format: "\(identifier)"))
+        let formattedString = NSMutableAttributedString(string: String(format: "\(identifier)\nConfidence:  %.2f", confidence))
         let largeFont = UIFont(name: "Helvetica", size: 24.0)!
         formattedString.addAttributes([NSAttributedString.Key.font: largeFont], range: NSRange(location: 0, length: identifier.count))
         textLayer.string = formattedString
-        textLayer.bounds = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: UIScreen.main.bounds.size.width)
-        textLayer.position = CGPoint(x: UIScreen.main.bounds.midX, y: UIScreen.main.bounds.midY)
+        textLayer.bounds = CGRect(x: 0, y: 0, width: bounds.size.height - 10, height: bounds.size.width - 10)
+        textLayer.position = CGPoint(x: bounds.midX, y: bounds.midY)
         textLayer.shadowOpacity = 0.7
         textLayer.shadowOffset = CGSize(width: 2, height: 2)
         textLayer.foregroundColor = CGColor(colorSpace: CGColorSpaceCreateDeviceRGB(), components: [0.0, 0.0, 0.0, 1.0])
@@ -89,25 +88,34 @@ final class ViewController: CALayerController {
         uiimage = UIImageFromSampleBuffer(sampleBuffer)
         self.stime = Date()
         //uiimage = UIResize(image:uiimage!, width:224.0)
-        resnet50ModelManager.performRequet(image:uiimage!)
+        YOLOModel.performRequet(image:uiimage!)
         //self.predtime.text = String(Double(uiimage!.size.height))
     }
+    
+    
 }
 
-extension ViewController: Resnet50ModelManagerDelegate {
-    func didRecieve(_ observation: VNClassificationObservation) {
+extension ViewController: YOLOModelManagerDelegate {
+    func didRecieve(_ results: [VNRecognizedObjectObservation]) {
         self.detectionOverlay.sublayers = nil
-        if (self.detecting == false) {
-            self.detecting = true
-            DispatchQueue.main.async(execute: {
-                //let textLayer = self.createTextSubLayerInBounds(identifier:observation.identifier, confidence:observation.confidence)
-                let textLayer = self.createTextSubLayerInBounds(identifier:"Latency: " + calcurateTime(stime:self.stime))
-                //self.obsLabel2.text = "\(observation.identifier) is \(ceil(observation.confidence*1000)/10)%"
-                self.detectionOverlay.addSublayer(textLayer)
-                //detectionOverlay.addSublayer(self.predtime)
-            })
-            usleep(500*1000) // ms
-            self.detecting = false
+        for observation in results where observation is VNRecognizedObjectObservation {
+            if (self.detecting == false) {
+                self.detecting = true
+                let topLabelObservation = observation.labels[0]
+                let objectBounds = VNImageRectForNormalizedRect(observation.boundingBox, Int(bufferSize.width), Int(bufferSize.height))
+                DispatchQueue.main.async(execute: {
+                    let shapeLayer = self.createRoundedRectLayerWithBounds(objectBounds)
+                    let textLayer = self.createTextSubLayerInBounds(objectBounds,
+                                                                    identifier: topLabelObservation.identifier,
+                                                                    confidence: topLabelObservation.confidence)
+                    //let textLayer = self.createTextSubLayerInBounds(identifier:"Latency: " + calcurateTime(stime:self.stime))
+                    shapeLayer.addSublayer(textLayer)
+                    self.detectionOverlay.addSublayer(shapeLayer)
+                    // \(ceil(observation.confidence*1000)/10)%"                    
+                })
+                usleep(500*1000) // ms
+                self.detecting = false
+            }
         }
     }
 }
