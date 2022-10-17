@@ -29,27 +29,16 @@ class CALayerController: UIViewController, AVCaptureVideoDataOutputSampleBufferD
     }
     
     func setupAVCapture() {
-        var deviceInput: AVCaptureDeviceInput!
-        
         // Select a video device, make an input
         let videoDevice = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera], mediaType: .video, position: .back).devices.first
-        do {
-            deviceInput = try AVCaptureDeviceInput(device: videoDevice!)
-        } catch {
-            print("Could not create video device input: \(error)")
-            return
-        }
-        
+        guard let deviceInput = try? AVCaptureDeviceInput(device: videoDevice!) else { return }
         session.beginConfiguration()
-        session.sessionPreset = .vga640x480 // Model image size is smaller.
+        session.sessionPreset = .hd1280x720 //.vga640x480 // Model image size is smaller.
         
         // Add a video input
-        guard session.canAddInput(deviceInput) else {
-            print("Could not add video device input to the session")
-            session.commitConfiguration()
-            return
-        }
+        guard session.canAddInput(deviceInput) else { return }
         session.addInput(deviceInput)
+        // Add a video output
         if session.canAddOutput(videoDataOutput) {
             session.addOutput(videoDataOutput)
             // Add a video data output

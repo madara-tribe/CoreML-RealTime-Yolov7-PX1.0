@@ -54,7 +54,7 @@ final class ViewController: CALayerController {
                                          y: 0.0,
                                          width: bufferSize.width,
                                          height: bufferSize.height)
-        //detectionOverlay.position = CGPoint(x: rootLayer.bounds.midX, y: rootLayer.bounds.midY)
+        detectionOverlay.position = CGPoint(x: rootLayer.bounds.midX, y: rootLayer.bounds.midY)
         rootLayer.addSublayer(detectionOverlay)
     }
     
@@ -83,7 +83,7 @@ final class ViewController: CALayerController {
         let textLayer = CATextLayer()
         textLayer.name = "Object Label"
         let formattedString = NSMutableAttributedString(string: String(format: "\(identifier)\n: %.3f", confidence*100) + "%")
-        let largeFont = UIFont(name: "Helvetica", size: 10.0)!
+        let largeFont = UIFont(name: "Helvetica", size: 15.0)!
         formattedString.addAttributes([NSAttributedString.Key.font: largeFont], range: NSRange(location: 0, length: identifier.count))
         textLayer.string = formattedString
         textLayer.bounds = CGRect(x: 0, y: 0, width: bounds.size.height - 10, height: bounds.size.width - 10)
@@ -145,7 +145,7 @@ extension ViewController: YOLOModelManagerDelegate {
                     self.calcurateTime(stime:self.stime)
                 }
             })
-            usleep(500*100) // ms
+            usleep(500*500) // ms
             self.detecting = false
             self.detectionOverlay.sublayers = nil
         }
