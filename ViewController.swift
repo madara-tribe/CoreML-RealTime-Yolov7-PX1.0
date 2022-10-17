@@ -27,14 +27,14 @@ final class ViewController: CALayerController {
     func PXTest(){
         // Text PX
         textlayer.string = "PX2 Testing"
-        textlayer.frame = CGRect.init(x:0, y:0, width: 250, height: 30)
+        textlayer.frame = CGRect.init(x:0, y:20, width: 250, height: 30)
         //textlayer.backgroundColor = UIColor.white.cgColor
         textlayer.foregroundColor = UIColor.red.cgColor
         textlayer.fontSize = 20
         rootLayer.addSublayer(textlayer)
         
         // predtime
-        predtimer.frame = CGRect.init(x:0, y:40, width: 200, height: 30)
+        predtimer.frame = CGRect.init(x:0, y:50, width: 200, height: 30)
         predtimer.backgroundColor = UIColor.white.cgColor
         predtimer.foregroundColor = UIColor.black.cgColor
         predtimer.fontSize = 20
