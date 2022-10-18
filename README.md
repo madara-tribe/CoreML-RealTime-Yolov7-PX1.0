@@ -9,7 +9,7 @@ Realtime prediction of yolov3 or yolov7 as coreML model on iOS.
 
 # Put PX2 into action 
 
-- Yolov7 is faster and high performqnace 
+- YOLOv7 is far faster and high performqnace than YOLOv3
 - close screen is good performance but far away screen is bad 
 
 ## YOLOv7 on iPad Pro 
