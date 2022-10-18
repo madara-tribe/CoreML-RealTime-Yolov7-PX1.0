@@ -138,7 +138,7 @@ final class ObjectDetectionController: CALayerController {
         shapeLayer.cornerRadius = 7
         return shapeLayer
     }
-    
+    // call when captured every time
     override func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
             return
