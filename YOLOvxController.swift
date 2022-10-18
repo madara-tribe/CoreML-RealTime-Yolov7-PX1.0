@@ -8,7 +8,7 @@ final class ObjectDetectionController: CALayerController {
     
     public let textlayer = CATextLayer()
     public let predtimer = CATextLayer()
-    
+    var count:Int!
     var uiimage: UIImage?
     var detecting:Bool = false
     var stime:Date!
@@ -16,7 +16,7 @@ final class ObjectDetectionController: CALayerController {
     func setupVision(){
         // Setup Vision parts
         do {
-            let visionModel = try VNCoreMLModel(for: YOLOv3(configuration:MLModelConfiguration()).model)
+            let visionModel = try VNCoreMLModel(for: yolov7(configuration:MLModelConfiguration()).model)
             if (self.detecting == false) {
                 self.detecting = true
                 let objectRecognition = VNCoreMLRequest(model: visionModel, completionHandler: { (request, error) in
@@ -28,7 +28,7 @@ final class ObjectDetectionController: CALayerController {
                         }
                         self.calcurateTime(stime:self.stime)
                     })
-                    usleep(500*500) // ms
+                    usleep(500*100) // ms
                     self.detecting = false
                     self.detectionOverlay.sublayers = nil
                 })
@@ -64,9 +64,12 @@ final class ObjectDetectionController: CALayerController {
     func drawVisionRequestResults(_ results: [Any]) {
         CATransaction.begin()
         CATransaction.setValue(kCFBooleanTrue, forKey: kCATransactionDisableActions)
-        detectionOverlay.sublayers = nil // remove all the old recognized objects
+         detectionOverlay.sublayers = nil // remove all the old recognized objects
         for observation in results where observation is VNRecognizedObjectObservation {
             guard let objectObservation = observation as? VNRecognizedObjectObservation else {
+                continue
+            }
+            if (self.count>10){
                 continue
             }
             // Select only the label with the highest confidence.
@@ -80,7 +83,9 @@ final class ObjectDetectionController: CALayerController {
                                                             confidence: topLabelObservation.confidence)
             shapeLayer.addSublayer(textLayer)
             detectionOverlay.addSublayer(shapeLayer)
+            self.count += 1
         }
+        self.count = 0
         self.updateLayerGeometry()
         CATransaction.commit()
     }
