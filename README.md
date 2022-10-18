@@ -1,4 +1,4 @@
-# PX2 - CoreML of Yolov7 for iOS (as Prototype)
+# PX2 - CoreML of Yolov7/YoloV3 for iOS (as Prototype)
 
 
 
