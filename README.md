@@ -15,7 +15,7 @@ Realtime prediction of yolov3 or yolov7 as coreML model on iOS.
 
 ## YOLOv3 on iPhone7
 
-
+<img src="https://user-images.githubusercontent.com/48679574/196463797-f4e5cfa2-f178-4902-b99c-be4016a19025.gif" width="400" height="600"/>
 
 
 # References
